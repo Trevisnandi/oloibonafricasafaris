@@ -491,9 +491,26 @@ function App() {
               <CardContent>
                 <form className="space-y-4" onSubmit={(e) => {
                   e.preventDefault()
-                  alert('Thank you for your interest! We will contact you shortly.')
-                }}>
-                  <div>
+                  const formData = new FormData(e.target)
+                  const data = Object.fromEntries(formData.entries())
+
+                  fetch("http://169.254.0.21:5000/api/submit_booking", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                  })
+                    .then((response) => response.json())
+                    .then((result) => {
+                      alert(result.message)
+                      e.target.reset() // Clear the form
+                    })
+                    .catch((error) => {
+                      console.error("Error submitting booking:", error)
+                      alert("There was an error submitting your booking. Please try again later.")
+                    })
+                }}><div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                     <input
                       type="text"
